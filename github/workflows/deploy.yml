@@ -1,0 +1,34 @@
+
+name: Despliegue de Mi Lista de Compras
+on:
+  push:
+    branches:
+      - main  # Se activa cada vez que subes algo a la rama main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Checkout del código
+        uses: actions/checkout@v3
+
+      - name: 🐍 Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: 📦 Instalar Flet
+        run: |
+          python -m pip install --upgrade pip
+          pip install flet==0.25.0
+
+      - name: 🏗️ Construir Web
+        run: |
+          # El robot hace el build perfecto con la ruta correcta
+          flet build web --base-url /mi_lista_compras/
+
+      - name: 🚀 Publicar en GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build/web # Sube solo lo que salió del build
+          branch: gh-pages  # Lo guarda en una rama especial para la web
