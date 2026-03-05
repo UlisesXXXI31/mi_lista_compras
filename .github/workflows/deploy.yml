@@ -1,1 +1,35 @@
+name: Despliegue de Mi Lista de Compras
+on:
+  push:
+    branches:
+      - main
 
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Checkout del código
+        uses: actions/checkout@v3
+
+      - name: 🐍 Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: 📦 Instalar Flet
+        run: |
+          python -m pip install --upgrade pip
+          pip install flet==0.25.0
+
+      - name: 🏗️ Construir Web
+        run: |
+          flet build web --base-url /mi_lista_compras/
+
+      - name: 🚀 Publicar en GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build/web
+          branch: gh-pages
