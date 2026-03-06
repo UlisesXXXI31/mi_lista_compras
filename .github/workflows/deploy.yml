@@ -17,7 +17,7 @@ jobs:
       - name: 🐍 Configurar Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: 🚀 Configurar Flutter
         uses: subosito/flutter-action@v2
@@ -30,18 +30,21 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libayatana-appindicator3-dev
 
-      - name: 📦 Instalar Flet (Versión corregida para CI)
+      - name: 📦 Instalar Flet
         run: |
           python -m pip install --upgrade pip
-          # Usamos la 0.27.3 porque corrige el error 'unicode' en servidores
-          pip install flet==0.27.3
+          # Usamos la 0.26.0, que es la más estable para despliegues web
+          pip install flet==0.26.0
 
       - name: 🏗️ Construir Web
         run: |
-          # Configuramos el entorno para que no falle el texto
-          export LANG=en_US.UTF-8
-          export LC_ALL=en_US.UTF-8
-          # El comando de construcción
+          # 1. Forzamos el modo UTF-8 y terminal simple para evitar el error 'unicode'
+          export PYTHONUTF8=1
+          export TERM=xterm
+          export NO_COLOR=1
+          
+          # 2. Ejecutamos el build diciéndole que use el Flutter que ya instalamos
+          # Esto evita que intente descargar otro y falle
           flet build web --base-url /mi_lista_compras/
 
       - name: 🚀 Publicar en GitHub Pages
