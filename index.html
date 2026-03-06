@@ -6,16 +6,16 @@
   <title>Mi Lista de Compras</title>
   <meta name="flet-web-pyodide" content="true">
   <script>
+    // Variables obligatorias para que no de error JS
     var webRenderer = "html";
+    var useColorEmoji = false; 
     var pythonModuleName = "main";
-    // Forzamos el nuevo nombre del archivo para que el navegador no use el viejo
-    var fletWebPyodideBundleUrl = "codigo_v1.zip";
   </script>
   <script src="python.js"></script>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <!-- Eliminamos el script del Service Worker para que no de error de carga -->
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
