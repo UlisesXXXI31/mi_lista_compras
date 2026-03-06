@@ -1,4 +1,3 @@
-
 name: Despliegue de Mi Lista de Compras
 on:
   push:
@@ -18,7 +17,7 @@ jobs:
       - name: 🐍 Configurar Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: '3.11' # Cambiamos a 3.11 por estabilidad en el servidor
 
       - name: 🚀 Configurar Flutter
         uses: subosito/flutter-action@v2
@@ -26,8 +25,7 @@ jobs:
           flutter-version: '3.24.5'
           channel: 'stable'
 
-      # --- NUEVO PASO: Instalar librerías del sistema para que el robot no se queje ---
-      - name: 🛠️ Instalar dependencias de Linux
+      - name: 🛠️ Instalar dependencias del sistema
         run: |
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libayatana-appindicator3-dev
@@ -39,8 +37,10 @@ jobs:
 
       - name: 🏗️ Construir Web
         run: |
-          # Usamos una variable de entorno para evitar errores de texto
-          export PYTHONIOENCODING=utf8
+          # TRUCO MAESTRO: Forzamos el idioma y evitamos que Flet use la función 'unicode' rota
+          export LANG=C.UTF-8
+          export LC_ALL=C.UTF-8
+          export PYTHONIOENCODING=utf-8
           flet build web --base-url /mi_lista_compras/
 
       - name: 🚀 Publicar en GitHub Pages
