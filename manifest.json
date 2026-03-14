@@ -1,6 +1,6 @@
 {
-    "name": "despliegue",
-    "short_name": "despliegue",
+    "name": "mi_lista_compras",
+    "short_name": "mi_lista_compras",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#FFFFFF",

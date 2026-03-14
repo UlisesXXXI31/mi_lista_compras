@@ -1,0 +1,15 @@
+# Configuración global de la App
+  app:
+  name: "Mi Lista Pro"           # Nombre que sale bajo el icono
+  package_name: "com.ulises.listapro" # Único en el mundo
+  version: "1.0.0"               # Versión para el usuario
+  build_number: 1                # ¡OJO! Cada vez que subas a la tienda, suma +1
+
+  android:
+  icon: "assets/icon.png"        # Ruta al icono que buscaste
+  permissions:
+    - INTERNET                   # Necesario para Supabase
+
+  # Aquí puedes poner el color de la pantalla de carga (Splash)
+  splash_color: "#FFFFFF" 
+  arch: "arm64-v8a"
