@@ -1,0 +1,43 @@
+name: Despliegue Final GastoMaster
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: 🚚 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🐍 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 🚀 Flutter 3.24.5
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+          channel: 'stable'
+
+      - name: 📦 Instalar Flet
+        run: |
+          python -m pip install --upgrade pip
+          pip install flet==0.27.3  # Versión que corrige el bug de 'unicode' en servidores
+
+      - name: 🏗️ Construir Web
+        run: |
+          export NO_COLOR=1
+          export PYTHONUTF8=1
+          flet build web --base-url /mi_lista_compras/
+
+      - name: 🚀 Publicar
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build/web
+          branch: gh-pages

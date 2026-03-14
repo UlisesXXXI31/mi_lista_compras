@@ -1,0 +1,16 @@
+# Archivos pesados y binarios
+build/
+assets/app/
+*.apk
+*.aab
+*.apks
+*.jar
+*.keystore
+
+# Basura de Python y VS Code
+__pycache__/
+.venv/
+.vscode/
+
+# El archivo de requerimientos con typo (opcional arreglarlo)
+`requirements.txt
