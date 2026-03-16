@@ -29,25 +29,25 @@ jobs:
       - name: 📦 Instalar Dependencias
         run: |
           python -m pip install --upgrade pip
-          pip install flet==0.27.3 supabase
+          # Instalamos versiones específicas que sabemos que no chocan
+          pip install flet==0.27.3 supabase==2.11.0
+          # Si tienes el requirements.txt con esas mismas versiones, lo instalamos
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: 🏗️ Construir Web
         run: |
-          # Limpieza preventiva
-          rm -rf build/web
-          # Construcción con base-url para GitHub Pages
-          flet build web --base-url /mi_lista_compras/
+         # Limpieza absoluta de builds previos
+         rm -rf build
+         # Construimos ignorando el caché para forzar el nuevo resolver
+         flet build web --base-url /mi_lista_compras/
 
       - name: 🛠️ Fix Service Worker Path
         run: |
-          # Corrección de la ruta del Service Worker en el index.html
           sed -i 's|flutter_service_worker.js|/mi_lista_compras/flutter_service_worker.js|g' build/web/index.html
-          # Corrección opcional del manifest para asegurar iconos y recursos
           if [ -f build/web/manifest.json ]; then
             sed -i 's|"/|"/mi_lista_compras/|g' build/web/manifest.json
           fi
-
+          
       - name: 🚀 Publicar
         uses: JamesIves/github-pages-deploy-action@v4
         with:
