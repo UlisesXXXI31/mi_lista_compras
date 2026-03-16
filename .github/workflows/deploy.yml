@@ -43,9 +43,10 @@ jobs:
           cd build/web
           sed -i 's|<base href="/">|<base href="/mi_lista_compras/">|g' index.html
 
-      - name: 🚀 Publicar
+      - - name: 🚀 Publicar
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: build/web
           branch: gh-pages
-          clean: true # Mantiene el historial de la rama gh-pages limpio
+          clean: true # <--- ESTO ES VITAL: Borra todo lo viejo en gh-pages antes de subir lo nuevo
+          single-commit: true # <--- Opcional: Mantiene la rama gh-pages con un solo commit para ahorrar espacio
