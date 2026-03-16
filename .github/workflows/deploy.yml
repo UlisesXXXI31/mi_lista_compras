@@ -36,10 +36,9 @@ jobs:
 
       - name: 🏗️ Construir Web
         run: |
-         # Limpieza absoluta de builds previos
-         rm -rf build
-         # Construimos ignorando el caché para forzar el nuevo resolver
-         flet build web --base-url /mi_lista_compras/
+          pip install flet==0.27.3 supabase==2.11.0
+          # El flag --requirements es la clave para que cree la carpeta que falta en tu captura
+          flet build web --base-url /mi_lista_compras/ --requirements requirements.txt
 
       - name: 🛠️ Fix Service Worker Path
         run: |
