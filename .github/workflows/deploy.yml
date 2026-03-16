@@ -42,7 +42,7 @@ jobs:
           # Esto obliga al script de arranque a buscar el worker en la ruta correcta
           sed -i 's|flutter_service_worker.js|/mi_lista_compras/flutter_service_worker.js|g' build/web/index.html
 
-      - - name: 🚀 Publicar
+      - name: 🚀 Publicar
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: build/web
