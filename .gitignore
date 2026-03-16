@@ -1,16 +1,19 @@
-# Archivos pesados y binarios
+# --- CONSTRUCCIÓN Y SALIDA ---
+# Ignoramos la carpeta build porque el Action la genera de cero
 build/
-assets/app/
+dist/
+.flet_bundle/
 *.apk
 *.aab
 *.apks
-*.jar
-*.keystore
 
-# Basura de Python y VS Code
+# --- DEPENDENCIAS Y ENTORNOS ---
+# NUNCA ignores requirements.txt, es el mapa de tu app
+# .venv e ignorados de Python
 __pycache__/
+*.py[cod]
+*$py.class
 .venv/
-.vscode/
-
-# El archivo de requerimientos con typo (opcional arreglarlo)
-`requirements.txt
+venv/
+ENV/
+.python-version
