@@ -34,30 +34,24 @@ jobs:
           # Si tienes el requirements.txt con esas mismas versiones, lo instalamos
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: 🏗️ Construir Web (Modo Super-Forzado)
+      - name: 🏗️ Build and Force Python Assets
         run: |
-          # 1. Instalación base para el compilador
+          # 1. Instalamos flet para tener el comando
           pip install flet==0.27.3 supabase==2.11.0
           
-          # 2. Intentar el build normal primero
+          # 2. Ejecutamos el build oficial
           flet build web --base-url /mi_lista_compras/
           
-          # 3. MANIOBRA DE RECONSTRUCCIÓN TOTAL:
-          # Si Flet no creó la carpeta o está vacía, instalamos TODO ahí dentro
-          echo "🔧 Asegurando librerías en el paquete del navegador..."
+          # 3. FORZADO MANUAL (Aquí está el truco):
+          # Creamos la ruta completa si no existe
           mkdir -p build/web/assets/python
           
-          # Instalamos flet y supabase directamente en el destino
+          # Instalamos las librerías directamente dentro de la carpeta que se va a publicar
           pip install flet==0.27.3 supabase==2.11.0 -t build/web/assets/python
           
-          # 4. LIMPIEZA CRÍTICA:
-          # Flet en la web a veces choca con archivos .pyc o carpetas bin
-          rm -rf build/web/assets/python/bin
-          find build/web/assets/python -name "__pycache__" -type d -exec rm -rf {} +
-          
-          # 5. VERIFICACIÓN:
-          echo "🔍 Verificando presencia de Flet en assets:"
-          ls build/web/assets/python/flet || echo "❌ FLET NO ENCONTRADO"
+          # 4. Verificación para el log (esto nos dirá si funcionó antes de subirlo)
+          echo "Contenido de assets/python:"
+          ls build/web/assets/python
           
       - name: 🚀 Publicar
         uses: JamesIves/github-pages-deploy-action@v4
