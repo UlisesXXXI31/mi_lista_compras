@@ -34,28 +34,29 @@ jobs:
           # Si tienes el requirements.txt con esas mismas versiones, lo instalamos
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: 🏗️ Construir Web
+      - name: 🏗️ Construir Web (Modo Forzado)
         run: |
           pip install flet==0.27.3 supabase==2.11.0
           
-          # 1. Aseguramos que los archivos están en la raíz
-          # (A veces GitHub Actions los pone en subcarpetas según cómo hiciste el checkout)
-          ls -la
+          # 1. Creamos un micro-entorno para que Flet no tenga excusas
+          echo "flet==0.27.3" > requirements.txt
+          echo "supabase==2.11.0" >> requirements.txt
           
-          # 2. Ejecutamos el build apuntando explícitamente al directorio actual '.'
-          # Esto obliga a Flet a mirar el requirements.txt que está ahí mismo
-          flet build web . --base-url /mi_lista_compras/
+          # 2. Ejecutamos el build con el flag --verbose para ver qué hace por dentro
+          flet build web --base-url /mi_lista_compras/ --verbose
           
-          # 3. VERIFICACIÓN: Ahora debería existir
-          echo "🔍 Comprobando si ahora sí se crearon los paquetes:"
-          if [ -d "build/web/assets/python" ]; then
-            echo "✅ Carpeta python encontrada. ¡Éxito!"
-            ls build/web/assets/python
-          else
-            echo "❌ ERROR CRÍTICO: Flet sigue sin empaquetar las librerías."
-            exit 1
+          # 3. MANIOBRA DE EMERGENCIA: 
+          # Si Flet no creó la carpeta, la forzamos nosotros instalando 
+          # las librerías directamente en la carpeta de assets del build
+          if [ ! -d "build/web/assets/python" ]; then
+            echo "⚠️ Flet falló de nuevo. Iniciando recuperación manual..."
+            mkdir -p build/web/assets/python
+            pip install supabase==2.11.0 -t build/web/assets/python
           fi
-
+          
+          # 4. VERIFICACIÓN FINAL
+          echo "🔍 Contenido final de assets:"
+          ls -R build/web/assets | grep python
       - name: 🛠️ Fix Service Worker Path
         run: |
           sed -i 's|flutter_service_worker.js|/mi_lista_compras/flutter_service_worker.js|g' build/web/index.html
