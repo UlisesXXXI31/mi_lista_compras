@@ -48,7 +48,23 @@
 
 import flet as ft
 import traceback # Para capturar errores exactos en el móvil
+import os
+from supabase import create_client
 
+# 1. CONFIGURACIÓN DE SEGURIDAD (Para Render)
+# Render leerá estos valores de la pestaña 'Environment' que configuramos
+url = os.environ.get("SUPABASE_URL")
+key = os.environ.get("SUPABASE_KEY")
+
+try:
+    supabase = create_client(url, key)
+except Exception as e:
+    print(f"Error conectando a Supabase: {e}")
+
+def main(page: ft.Page):
+    page.title = "Mi Lista de Compras"
+    page.theme_mode = ft.ThemeMode.LIGHT
+ 
 # --- COMPONENTE VISUAL ---
 class ItemCompra(ft.Row):
     """Representa un solo producto en la lista"""
