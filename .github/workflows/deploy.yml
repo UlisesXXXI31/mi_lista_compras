@@ -38,15 +38,23 @@ jobs:
         run: |
           pip install flet==0.27.3 supabase==2.11.0
           
-          # Eliminamos cualquier rastro de builds anteriores
-          rm -rf build
+          # 1. Aseguramos que los archivos están en la raíz
+          # (A veces GitHub Actions los pone en subcarpetas según cómo hiciste el checkout)
+          ls -la
           
-          # Construimos. Flet 0.27.3 detectará requirements.txt automáticamente
-          flet build web --base-url /mi_lista_compras/
+          # 2. Ejecutamos el build apuntando explícitamente al directorio actual '.'
+          # Esto obliga a Flet a mirar el requirements.txt que está ahí mismo
+          flet build web . --base-url /mi_lista_compras/
           
-          # COMPROBACIÓN CRUCIAL: ¿Se generaron los paquetes?
-          echo "🔍 Listando paquetes generados para el navegador:"
-          ls -R build/web/assets/python || echo "❌ ERROR: No se generó la carpeta python en assets"
+          # 3. VERIFICACIÓN: Ahora debería existir
+          echo "🔍 Comprobando si ahora sí se crearon los paquetes:"
+          if [ -d "build/web/assets/python" ]; then
+            echo "✅ Carpeta python encontrada. ¡Éxito!"
+            ls build/web/assets/python
+          else
+            echo "❌ ERROR CRÍTICO: Flet sigue sin empaquetar las librerías."
+            exit 1
+          fi
 
       - name: 🛠️ Fix Service Worker Path
         run: |
