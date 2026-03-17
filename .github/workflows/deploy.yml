@@ -21,14 +21,19 @@ jobs:
 
       - name: 🏗️ Build Web
         run: |
-          # Construimos la app
           flet build web --base-url /mi_lista_compras/
           
-          # FORZAMOS la creación de la carpeta de librerías
+          # Creamos la carpeta de python si no existe
           mkdir -p build/web/assets/python
           
-          # Instalamos las librerías directamente en la carpeta que se subirá
+          # Instalamos las librerías
           pip install flet==0.27.3 supabase==2.11.0 -t build/web/assets/python
+          
+          # COPIA MANUAL CRÍTICA:
+          # Copiamos tu main.py directamente a la raíz de la web
+          cp main.py build/web/main.py
+          # Y también por si acaso dentro de assets/python
+          cp main.py build/web/assets/python/main.py
 
       - name: 🚀 Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
