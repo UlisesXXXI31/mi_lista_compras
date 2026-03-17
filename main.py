@@ -47,24 +47,21 @@
 
 
 import flet as ft
-import traceback # Para capturar errores exactos en el móvil
+import traceback
 import os
 from supabase import create_client
 
 # 1. CONFIGURACIÓN DE SEGURIDAD (Para Render)
-# Render leerá estos valores de la pestaña 'Environment' que configuramos
 url = os.environ.get("SUPABASE_URL")
 key = os.environ.get("SUPABASE_KEY")
 
+supabase = None
 try:
-    supabase = create_client(url, key)
+    if url and key:
+        supabase = create_client(url, key)
 except Exception as e:
     print(f"Error conectando a Supabase: {e}")
 
-def main(page: ft.Page):
-    page.title = "Mi Lista de Compras"
-    page.theme_mode = ft.ThemeMode.LIGHT
- 
 # --- COMPONENTE VISUAL ---
 class ItemCompra(ft.Row):
     """Representa un solo producto en la lista"""
@@ -95,7 +92,6 @@ class ItemCompra(ft.Row):
 
 # --- FUNCIÓN PRINCIPAL ---
 def main(page: ft.Page):
-    # Envolvemos TODO en un try/except para que la app no se cierre si hay error
     try:
         page.title = "Mi Lista Pro"
         page.theme_mode = ft.ThemeMode.LIGHT
@@ -103,13 +99,13 @@ def main(page: ft.Page):
         
         lista_view = ft.Column(scroll=ft.ScrollMode.ADAPTIVE, expand=True)
 
-        # Lógica de persistencia
+        # Lógica de persistencia local
         def guardar_datos():
             try:
                 nombres = [item.nombre for item in lista_view.controls]
                 page.client_storage.set("productos", nombres)
             except:
-                pass # Si falla el guardado en móvil, que no crashee la app
+                pass 
 
         def borrar_item(item):
             lista_view.controls.remove(item)
@@ -139,7 +135,11 @@ def main(page: ft.Page):
         except:
             page.client_storage.clear()
 
-        entrada_txt = ft.TextField(label="¿Qué necesitas?", expand=True, on_submit=agregar_producto)
+        entrada_txt = ft.TextField(
+            label="¿Qué necesitas?", 
+            expand=True, 
+            on_submit=agregar_producto
+        )
 
         page.add(
             ft.Row([
@@ -157,7 +157,6 @@ def main(page: ft.Page):
         page.update()
 
     except Exception:
-        # Si la app falla al arrancar, mostramos el error en el móvil
         error_txt = traceback.format_exc()
         page.add(ft.Container(
             content=ft.Text(f"ERROR DE ARRANQUE:\n\n{error_txt}", color="white"),
@@ -165,5 +164,8 @@ def main(page: ft.Page):
         ))
         page.update()
 
+# --- ARRANQUE COMPATIBLE CON RENDER ---
 if __name__ == "__main__":
-    ft.app(target=main)
+    # Importante: Render usa la variable de entorno PORT
+    puerto = int(os.getenv("PORT", 8080))
+    ft.app(target=main, view=ft.AppView.WEB_BROWSER, port=puerto)
