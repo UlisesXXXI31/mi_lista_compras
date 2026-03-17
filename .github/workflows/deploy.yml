@@ -1,62 +1,37 @@
-name: Despliegue Final GastoMaster
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
-
-permissions:
-  contents: write
+    branches: [ main ]
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
-      - name: 🚚 Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: 🐍 Python 3.11
+      - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.10'
 
-      - name: 🚀 Flutter 3.24.5
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.5'
-          channel: 'stable'
-
-      - name: 📦 Instalar Dependencias
+      - name: 📦 Install Flet and Dependencies
         run: |
-          python -m pip install --upgrade pip
-          # Instalamos versiones específicas que sabemos que no chocan
           pip install flet==0.27.3 supabase==2.11.0
-          # Si tienes el requirements.txt con esas mismas versiones, lo instalamos
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: 🏗️ Build and Force Python Assets
+      - name: 🏗️ Build Web
         run: |
-          # 1. Instalamos flet para tener el comando
-          pip install flet==0.27.3 supabase==2.11.0
-          
-          # 2. Ejecutamos el build oficial
+          # Construimos la app
           flet build web --base-url /mi_lista_compras/
           
-          # 3. FORZADO MANUAL (Aquí está el truco):
-          # Creamos la ruta completa si no existe
+          # FORZAMOS la creación de la carpeta de librerías
           mkdir -p build/web/assets/python
           
-          # Instalamos las librerías directamente dentro de la carpeta que se va a publicar
+          # Instalamos las librerías directamente en la carpeta que se subirá
           pip install flet==0.27.3 supabase==2.11.0 -t build/web/assets/python
-          
-          # 4. Verificación para el log (esto nos dirá si funcionó antes de subirlo)
-          echo "Contenido de assets/python:"
-          ls build/web/assets/python
-          
-      - name: 🚀 Publicar
+
+      - name: 🚀 Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: build/web
           branch: gh-pages
-          clean: true
-          single-commit: true
