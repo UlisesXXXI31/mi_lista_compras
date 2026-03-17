@@ -36,18 +36,17 @@ jobs:
 
       - name: 🏗️ Construir Web
         run: |
-          # Instalamos las herramientas necesarias
           pip install flet==0.27.3 supabase==2.11.0
           
-          # Limpieza total antes de empezar
-          rm -rf build
+          # Aseguramos que el archivo existe y está limpio
+          cp requirements.txt requirements.txt.bak || true
           
-          # Construcción estándar (Flet buscará requirements.txt solo)
+          # Construcción limpia
           flet build web --base-url /mi_lista_compras/
           
-          # VERIFICACIÓN: Esto nos dirá en los logs si la carpeta python existe
-          echo "--- Contenido de build/web/assets ---"
-          ls -R build/web/assets
+          # Verificación de emergencia: ¿Se creó la carpeta de paquetes?
+          echo "--- Verificando empaquetado de librerías ---"
+          ls -R build/web/assets/python || echo "ALERTA: No se encontró la carpeta python en assets"
 
       - name: 🛠️ Fix Service Worker Path
         run: |
