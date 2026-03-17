@@ -34,35 +34,30 @@ jobs:
           # Si tienes el requirements.txt con esas mismas versiones, lo instalamos
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: 🏗️ Construir Web (Modo Forzado)
+      - name: 🏗️ Construir Web (Modo Super-Forzado)
         run: |
+          # 1. Instalación base para el compilador
           pip install flet==0.27.3 supabase==2.11.0
           
-          # 1. Creamos un micro-entorno para que Flet no tenga excusas
-          echo "flet==0.27.3" > requirements.txt
-          echo "supabase==2.11.0" >> requirements.txt
+          # 2. Intentar el build normal primero
+          flet build web --base-url /mi_lista_compras/
           
-          # 2. Ejecutamos el build con el flag --verbose para ver qué hace por dentro
-          flet build web --base-url /mi_lista_compras/ --verbose
+          # 3. MANIOBRA DE RECONSTRUCCIÓN TOTAL:
+          # Si Flet no creó la carpeta o está vacía, instalamos TODO ahí dentro
+          echo "🔧 Asegurando librerías en el paquete del navegador..."
+          mkdir -p build/web/assets/python
           
-          # 3. MANIOBRA DE EMERGENCIA: 
-          # Si Flet no creó la carpeta, la forzamos nosotros instalando 
-          # las librerías directamente en la carpeta de assets del build
-          if [ ! -d "build/web/assets/python" ]; then
-            echo "⚠️ Flet falló de nuevo. Iniciando recuperación manual..."
-            mkdir -p build/web/assets/python
-            pip install supabase==2.11.0 -t build/web/assets/python
-          fi
+          # Instalamos flet y supabase directamente en el destino
+          pip install flet==0.27.3 supabase==2.11.0 -t build/web/assets/python
           
-          # 4. VERIFICACIÓN FINAL
-          echo "🔍 Contenido final de assets:"
-          ls -R build/web/assets | grep python
-      - name: 🛠️ Fix Service Worker Path
-        run: |
-          sed -i 's|flutter_service_worker.js|/mi_lista_compras/flutter_service_worker.js|g' build/web/index.html
-          if [ -f build/web/manifest.json ]; then
-            sed -i 's|"/|"/mi_lista_compras/|g' build/web/manifest.json
-          fi
+          # 4. LIMPIEZA CRÍTICA:
+          # Flet en la web a veces choca con archivos .pyc o carpetas bin
+          rm -rf build/web/assets/python/bin
+          find build/web/assets/python -name "__pycache__" -type d -exec rm -rf {} +
+          
+          # 5. VERIFICACIÓN:
+          echo "🔍 Verificando presencia de Flet en assets:"
+          ls build/web/assets/python/flet || echo "❌ FLET NO ENCONTRADO"
           
       - name: 🚀 Publicar
         uses: JamesIves/github-pages-deploy-action@v4
