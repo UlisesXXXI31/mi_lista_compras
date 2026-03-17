@@ -38,15 +38,15 @@ jobs:
         run: |
           pip install flet==0.27.3 supabase==2.11.0
           
-          # Aseguramos que el archivo existe y está limpio
-          cp requirements.txt requirements.txt.bak || true
+          # Eliminamos cualquier rastro de builds anteriores
+          rm -rf build
           
-          # Construcción limpia
+          # Construimos. Flet 0.27.3 detectará requirements.txt automáticamente
           flet build web --base-url /mi_lista_compras/
           
-          # Verificación de emergencia: ¿Se creó la carpeta de paquetes?
-          echo "--- Verificando empaquetado de librerías ---"
-          ls -R build/web/assets/python || echo "ALERTA: No se encontró la carpeta python en assets"
+          # COMPROBACIÓN CRUCIAL: ¿Se generaron los paquetes?
+          echo "🔍 Listando paquetes generados para el navegador:"
+          ls -R build/web/assets/python || echo "❌ ERROR: No se generó la carpeta python en assets"
 
       - name: 🛠️ Fix Service Worker Path
         run: |
