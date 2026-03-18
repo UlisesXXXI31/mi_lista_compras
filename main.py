@@ -168,4 +168,12 @@ def main(page: ft.Page):
 if __name__ == "__main__":
     # Importante: Render usa la variable de entorno PORT
     puerto = int(os.getenv("PORT", 8080))
-    ft.app(target=main, view=ft.AppView.WEB_BROWSER, port=puerto)
+    if __name__ == "__main__":
+    puerto = int(os.getenv("PORT", 8080))
+    # Añadimos export_as_web_app para que genere los archivos necesarios al arrancar
+    ft.app(
+        target=main, 
+        view=ft.AppView.WEB_BROWSER, 
+        port=puerto,
+        host="0.0.0.0" # Esto ayuda a Render a conectar con el contenedor
+    )
