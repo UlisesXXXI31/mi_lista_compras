@@ -164,6 +164,8 @@ def main(page: ft.Page):
         ))
         page.update()
 
-if __name__ == "__main__":
-    puerto = int(os.getenv("PORT", 8080))
-    ft.app(target=main, view=ft.AppView.WEB_BROWSER, port=puerto)
+ #para despleagr en vercel
+app = ft.app(
+    target=main,
+    export_asgi=True  # Esto es lo que permite a Vercel servir la app
+)
