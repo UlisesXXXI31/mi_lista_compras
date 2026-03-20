@@ -53,6 +53,7 @@ import traceback
 import os
 
 from supabase import create_client
+from main_cloud import main
 
 
 
