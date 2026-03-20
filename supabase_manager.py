@@ -1,9 +1,15 @@
 import flet as ft
 from supabase import create_client, Client
 
-# --- TUS CREDENCIALES ---
-SUPABASE_URL = "https://tgibzetuyldndxwagwwv.supabase.co"
-SUPABASE_KEY = "sb_publishable_375xlx2UfsSgqP0o0pWMFQ_K61BNkaQ"
+# --- CONFIGURACIÓN SEGURA ---
+# Intentamos leer de las variables de entorno (Vercel)
+# Si no existen (Local), puedes poner un valor por defecto solo para pruebas locales
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://tgibzetuyldndxwagwwv.supabase.co")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+
+if not SUPABASE_KEY:
+    # Esto evitará que la app arranque sin la clave correcta
+    print("ERROR: No se encontró SUPABASE_KEY en las variables de entorno.")
 
 # Inicializamos el túnel hacia la nube
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
