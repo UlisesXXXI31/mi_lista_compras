@@ -1,3 +1,4 @@
+import os
 import flet as ft
 from supabase import create_client, Client
 
