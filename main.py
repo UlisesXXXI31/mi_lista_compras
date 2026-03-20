@@ -285,4 +285,7 @@ def main(page: ft.Page):
 
 # --- 2. CONFIGURACIÓN CRÍTICA PARA VERCEL (ASGI) ---
 # Exportamos la app como ASGI para que Vercel @vercel/python la maneje
-app = ft.app(target=main, export_asgi=True)
+app = ft.app(
+    target=main,
+    export_asgi=True
+)
