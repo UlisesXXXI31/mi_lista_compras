@@ -1,70 +1,14 @@
-
 {
   "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "main.py",
-      "use": "@vercel/python"
+      "source": "/(.*)",
+      "destination": "api/main"
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "main.py"
+  "functions": {
+    "api/main.py": {
+      "runtime": "vercel-python@0.1.0"
     }
-  ]
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
