@@ -53,8 +53,8 @@ import traceback
 import os
 
 from supabase import create_client
-from main_cloud import main
-from flet.app_asgi import app_asgi
+from main_cloud import main as main_func
+
 
 
 
@@ -285,11 +285,8 @@ def main(page: ft.Page):
 
 
 
-try:
-    # Intento para versiones nuevas (0.26+)
-    from flet.app_asgi import app_asgi
-    app = app_asgi(main)
-except ImportError:
-    # Intento para versiones clásicas (0.21 - 0.25)
-    import flet as ft
-    app = ft.app(target=main, export_asgi=True)
+# Configuración ultra-compatible para Vercel
+app = ft.app(
+    target=main_func,
+    export_asgi=True
+    )
