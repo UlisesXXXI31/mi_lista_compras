@@ -285,4 +285,11 @@ def main(page: ft.Page):
 
 
 
-app = app_asgi(main, assets_dir="assets")
+try:
+    # Intento para versiones nuevas (0.26+)
+    from flet.app_asgi import app_asgi
+    app = app_asgi(main)
+except ImportError:
+    # Intento para versiones clásicas (0.21 - 0.25)
+    import flet as ft
+    app = ft.app(target=main, export_asgi=True)
