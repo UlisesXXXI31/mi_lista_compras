@@ -49,10 +49,9 @@
 import flet as ft
 
 import traceback
-
 import os
-
 from supabase import create_client
+from flet.app_asgi import app_asgi
 from main_cloud import main as main_func
 
 
@@ -285,8 +284,5 @@ def main(page: ft.Page):
 
 
 
-# Configuración ultra-compatible para Vercel
-app = ft.app(
-    target=main_func,
-    export_asgi=True
-    )
+# Esta es la forma moderna que NO falla en Vercel
+app = app_asgi(main_func, assets_dir="assets")
