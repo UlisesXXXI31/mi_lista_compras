@@ -287,4 +287,4 @@ def main(page: ft.Page):
 app = ft.app(
     target=main,
     export_asgi=True
-)
+    )
