@@ -54,6 +54,8 @@ import os
 
 from supabase import create_client
 from main_cloud import main
+from flet.app_asgi import app_asgi
+
 
 
 
@@ -283,8 +285,4 @@ def main(page: ft.Page):
 
 
 
-# Al final de tu archivo main.py
-app = ft.app(
-    target=main,
-    export_asgi=True
-    )
+app = app_asgi(main, assets_dir="assets")
