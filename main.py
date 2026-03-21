@@ -284,5 +284,5 @@ def main(page: ft.Page):
 
 
 
-# Esta es la forma moderna que NO falla en Vercel
-app = app_asgi(main_func, assets_dir="assets")
+# Esto crea el objeto 'app' que Vercel ejecutará
+app = app_asgi(main_func)
